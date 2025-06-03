@@ -42,19 +42,19 @@ public class MainApplication extends Application {
         );
 
         Scene scene = new Scene(new VBox(tabPane), 1200, 800);
-        stage.setTitle("Sports Database Management");
+        stage.setTitle("Управление спортивной базой данных");
         stage.setScene(scene);
         stage.show();
     }
 
     private Tab createUsersTab() {
-        Tab tab = new Tab("Users");
+        Tab tab = new Tab("Пользователи");
         tab.setClosable(false);
 
         TableView<String[]> tableView = new TableView<>();
         
         // Add columns
-        String[] columns = {"ID", "Full Name", "Email", "Role", "Created At"};
+        String[] columns = {"ID", "ФИО", "Email", "Роль", "Дата создания"};
         for (int i = 0; i < columns.length; i++) {
             final int columnIndex = i;
             TableColumn<String[], String> column = new TableColumn<>(columns[i]);
@@ -69,15 +69,16 @@ public class MainApplication extends Application {
 
         // Add controls for inserting/updating users
         TextField fullNameField = new TextField();
-        fullNameField.setPromptText("Full Name");
+        fullNameField.setPromptText("ФИО");
         TextField emailField = new TextField();
         emailField.setPromptText("Email");
         PasswordField passwordField = new PasswordField();
-        passwordField.setPromptText("Password");
+        passwordField.setPromptText("Пароль");
         ComboBox<String> roleComboBox = new ComboBox<>();
+        roleComboBox.setPromptText("Выберите роль");
         roleComboBox.getItems().addAll("admin", "organizer", "trainer", "athlete");
 
-        Button addButton = new Button("Add User");
+        Button addButton = new Button("Добавить");
         addButton.setOnAction(e -> {
             try {
                 usersDAO.insertUser(
@@ -93,7 +94,7 @@ public class MainApplication extends Application {
             }
         });
 
-        Button updateButton = new Button("Update Selected");
+        Button updateButton = new Button("Обновить");
         updateButton.setOnAction(e -> {
             String[] selectedUser = tableView.getSelectionModel().getSelectedItem();
             if (selectedUser != null) {
@@ -112,7 +113,7 @@ public class MainApplication extends Application {
             }
         });
 
-        Button deleteButton = new Button("Delete Selected");
+        Button deleteButton = new Button("Удалить");
         deleteButton.setOnAction(e -> {
             String[] selectedUser = tableView.getSelectionModel().getSelectedItem();
             if (selectedUser != null) {
@@ -150,13 +151,13 @@ public class MainApplication extends Application {
     }
 
     private Tab createClubsTab() {
-        Tab tab = new Tab("Clubs");
+        Tab tab = new Tab("Клубы");
         tab.setClosable(false);
 
         TableView<String[]> tableView = new TableView<>();
         
         // Add columns
-        String[] columns = {"ID", "Name", "Foundation Year"};
+        String[] columns = {"ID", "Название", "Год основания"};
         for (int i = 0; i < columns.length; i++) {
             final int columnIndex = i;
             TableColumn<String[], String> column = new TableColumn<>(columns[i]);
@@ -171,11 +172,11 @@ public class MainApplication extends Application {
 
         // Add controls for inserting/updating clubs
         TextField nameField = new TextField();
-        nameField.setPromptText("Club Name");
+        nameField.setPromptText("Название клуба");
         TextField yearField = new TextField();
-        yearField.setPromptText("Foundation Year");
+        yearField.setPromptText("Год основания");
 
-        Button addButton = new Button("Add Club");
+        Button addButton = new Button("Добавить");
         addButton.setOnAction(e -> {
             try {
                 Integer year = yearField.getText().isEmpty() ? null : Integer.parseInt(yearField.getText());
@@ -190,7 +191,7 @@ public class MainApplication extends Application {
             }
         });
 
-        Button updateButton = new Button("Update Selected");
+        Button updateButton = new Button("Обновить");
         updateButton.setOnAction(e -> {
             String[] selectedClub = tableView.getSelectionModel().getSelectedItem();
             if (selectedClub != null) {
@@ -209,7 +210,7 @@ public class MainApplication extends Application {
             }
         });
 
-        Button deleteButton = new Button("Delete Selected");
+        Button deleteButton = new Button("Удалить");
         deleteButton.setOnAction(e -> {
             String[] selectedClub = tableView.getSelectionModel().getSelectedItem();
             if (selectedClub != null) {
@@ -246,13 +247,13 @@ public class MainApplication extends Application {
     }
 
     private Tab createSportsTab() {
-        Tab tab = new Tab("Sports");
+        Tab tab = new Tab("Виды спорта");
         tab.setClosable(false);
 
         TableView<String[]> tableView = new TableView<>();
         
         // Add columns
-        String[] columns = {"ID", "Name", "Description"};
+        String[] columns = {"ID", "Название", "Описание"};
         for (int i = 0; i < columns.length; i++) {
             final int columnIndex = i;
             TableColumn<String[], String> column = new TableColumn<>(columns[i]);
@@ -267,12 +268,12 @@ public class MainApplication extends Application {
 
         // Add controls for inserting/updating sports
         TextField nameField = new TextField();
-        nameField.setPromptText("Sport Name");
+        nameField.setPromptText("Название вида спорта");
         TextArea descriptionArea = new TextArea();
-        descriptionArea.setPromptText("Description");
+        descriptionArea.setPromptText("Описание");
         descriptionArea.setPrefRowCount(3);
 
-        Button addButton = new Button("Add Sport");
+        Button addButton = new Button("Добавить");
         addButton.setOnAction(e -> {
             try {
                 sportsDAO.insertSport(
@@ -286,7 +287,7 @@ public class MainApplication extends Application {
             }
         });
 
-        Button updateButton = new Button("Update Selected");
+        Button updateButton = new Button("Обновить");
         updateButton.setOnAction(e -> {
             String[] selectedSport = tableView.getSelectionModel().getSelectedItem();
             if (selectedSport != null) {
@@ -304,7 +305,7 @@ public class MainApplication extends Application {
             }
         });
 
-        Button deleteButton = new Button("Delete Selected");
+        Button deleteButton = new Button("Удалить");
         deleteButton.setOnAction(e -> {
             String[] selectedSport = tableView.getSelectionModel().getSelectedItem();
             if (selectedSport != null) {
@@ -341,13 +342,13 @@ public class MainApplication extends Application {
     }
 
     private Tab createFacilitiesTab() {
-        Tab tab = new Tab("Sports Facilities");
+        Tab tab = new Tab("Спортивные объекты");
         tab.setClosable(false);
 
         TableView<String[]> tableView = new TableView<>();
         
         // Add columns
-        String[] columns = {"ID", "Name", "Type", "Address", "Capacity", "Surface Type"};
+        String[] columns = {"ID", "Название", "Тип", "Адрес", "Вместимость", "Тип покрытия"};
         for (int i = 0; i < columns.length; i++) {
             final int columnIndex = i;
             TableColumn<String[], String> column = new TableColumn<>(columns[i]);
@@ -362,21 +363,27 @@ public class MainApplication extends Application {
 
         // Add controls for inserting/updating facilities
         TextField nameField = new TextField();
-        nameField.setPromptText("Facility Name");
+        nameField.setPromptText("Название объекта");
         
         ComboBox<String> typeComboBox = new ComboBox<>();
-        typeComboBox.getItems().addAll("stadium", "gym", "court", "arena", "pool");
-        typeComboBox.setPromptText("Facility Type");
+        typeComboBox.getItems().addAll(
+            "stadium - Стадион", 
+            "gym - Спортзал", 
+            "court - Корт", 
+            "arena - Арена", 
+            "pool - Бассейн"
+        );
+        typeComboBox.setPromptText("Тип объекта");
         
         TextArea addressArea = new TextArea();
-        addressArea.setPromptText("Address");
+        addressArea.setPromptText("Адрес");
         addressArea.setPrefRowCount(2);
         
         TextField capacityField = new TextField();
-        capacityField.setPromptText("Capacity (for stadiums)");
+        capacityField.setPromptText("Вместимость (для стадионов)");
         
         TextField surfaceField = new TextField();
-        surfaceField.setPromptText("Surface Type (for courts)");
+        surfaceField.setPromptText("Тип покрытия (для кортов)");
 
         // Type change listener to handle conditional fields
         typeComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
@@ -386,7 +393,7 @@ public class MainApplication extends Application {
             }
         });
 
-        Button addButton = new Button("Add Facility");
+        Button addButton = new Button("Добавить");
         addButton.setOnAction(e -> {
             try {
                 Integer capacity = null;
@@ -413,7 +420,7 @@ public class MainApplication extends Application {
             }
         });
 
-        Button updateButton = new Button("Update Selected");
+        Button updateButton = new Button("Обновить");
         updateButton.setOnAction(e -> {
             String[] selectedFacility = tableView.getSelectionModel().getSelectedItem();
             if (selectedFacility != null) {
@@ -444,7 +451,7 @@ public class MainApplication extends Application {
             }
         });
 
-        Button deleteButton = new Button("Delete Selected");
+        Button deleteButton = new Button("Удалить");
         deleteButton.setOnAction(e -> {
             String[] selectedFacility = tableView.getSelectionModel().getSelectedItem();
             if (selectedFacility != null) {
@@ -485,13 +492,13 @@ public class MainApplication extends Application {
     }
 
     private Tab createAthletesTab() {
-        Tab tab = new Tab("Athletes");
+        Tab tab = new Tab("Спортсмены");
         tab.setClosable(false);
 
         TableView<String[]> tableView = new TableView<>();
         
         // Add columns
-        String[] columns = {"ID", "Full Name", "Club", "Birth Date"};
+        String[] columns = {"ID", "ФИО", "Клуб", "Дата рождения"};
         for (int i = 0; i < columns.length; i++) {
             final int columnIndex = i;
             TableColumn<String[], String> column = new TableColumn<>(columns[i]);
@@ -506,13 +513,13 @@ public class MainApplication extends Application {
 
         // Add controls for inserting/updating athletes
         ComboBox<String> userComboBox = new ComboBox<>();
-        userComboBox.setPromptText("Select Athlete User");
+        userComboBox.setPromptText("Выберите спортсмена");
         
         ComboBox<String> clubComboBox = new ComboBox<>();
-        clubComboBox.setPromptText("Select Club");
+        clubComboBox.setPromptText("Выберите клуб");
         
         DatePicker birthDatePicker = new DatePicker();
-        birthDatePicker.setPromptText("Birth Date");
+        birthDatePicker.setPromptText("Дата рождения");
 
         // Load combo box data
         try {
@@ -529,7 +536,7 @@ public class MainApplication extends Application {
             showError("Error loading data", e.getMessage());
         }
 
-        Button addButton = new Button("Add Athlete");
+        Button addButton = new Button("Добавить");
         addButton.setOnAction(e -> {
             try {
                 if (userComboBox.getValue() == null || clubComboBox.getValue() == null || birthDatePicker.getValue() == null) {
@@ -550,7 +557,7 @@ public class MainApplication extends Application {
             }
         });
 
-        Button updateButton = new Button("Update Selected");
+        Button updateButton = new Button("Обновить");
         updateButton.setOnAction(e -> {
             String[] selectedAthlete = tableView.getSelectionModel().getSelectedItem();
             if (selectedAthlete != null) {
@@ -577,7 +584,7 @@ public class MainApplication extends Application {
             }
         });
 
-        Button deleteButton = new Button("Delete Selected");
+        Button deleteButton = new Button("Удалить");
         deleteButton.setOnAction(e -> {
             String[] selectedAthlete = tableView.getSelectionModel().getSelectedItem();
             if (selectedAthlete != null) {
@@ -623,13 +630,13 @@ public class MainApplication extends Application {
     }
 
     private Tab createCompetitionsTab() {
-        Tab tab = new Tab("Competitions");
+        Tab tab = new Tab("Соревнования");
         tab.setClosable(false);
 
         TableView<String[]> tableView = new TableView<>();
         
         // Add columns
-        String[] columns = {"ID", "Name", "Sport", "Facility", "Organizer", "Start Date", "End Date"};
+        String[] columns = {"ID", "Название", "Вид спорта", "Объект", "Организатор", "Дата начала", "Дата окончания"};
         for (int i = 0; i < columns.length; i++) {
             final int columnIndex = i;
             TableColumn<String[], String> column = new TableColumn<>(columns[i]);
@@ -644,22 +651,22 @@ public class MainApplication extends Application {
 
         // Add controls for inserting/updating competitions
         TextField nameField = new TextField();
-        nameField.setPromptText("Competition Name");
+        nameField.setPromptText("Название соревнования");
         
         ComboBox<String> sportComboBox = new ComboBox<>();
-        sportComboBox.setPromptText("Select Sport");
+        sportComboBox.setPromptText("Выберите вид спорта");
         
         ComboBox<String> facilityComboBox = new ComboBox<>();
-        facilityComboBox.setPromptText("Select Facility");
+        facilityComboBox.setPromptText("Выберите спортивный объект");
         
         ComboBox<String> organizerComboBox = new ComboBox<>();
-        organizerComboBox.setPromptText("Select Organizer");
+        organizerComboBox.setPromptText("Выберите организатора");
         
         DatePicker startDatePicker = new DatePicker();
-        startDatePicker.setPromptText("Start Date");
+        startDatePicker.setPromptText("Дата начала");
         
         DatePicker endDatePicker = new DatePicker();
-        endDatePicker.setPromptText("End Date");
+        endDatePicker.setPromptText("Дата окончания");
 
         // Load combo box data
         try {
@@ -681,7 +688,7 @@ public class MainApplication extends Application {
             showError("Error loading data", e.getMessage());
         }
 
-        Button addButton = new Button("Add Competition");
+        Button addButton = new Button("Добавить");
         addButton.setOnAction(e -> {
             try {
                 if (nameField.getText().isEmpty() || sportComboBox.getValue() == null || 
@@ -712,7 +719,7 @@ public class MainApplication extends Application {
             }
         });
 
-        Button updateButton = new Button("Update Selected");
+        Button updateButton = new Button("Обновить");
         updateButton.setOnAction(e -> {
             String[] selectedCompetition = tableView.getSelectionModel().getSelectedItem();
             if (selectedCompetition != null) {
@@ -747,7 +754,7 @@ public class MainApplication extends Application {
             }
         });
 
-        Button deleteButton = new Button("Delete Selected");
+        Button deleteButton = new Button("Удалить");
         deleteButton.setOnAction(e -> {
             String[] selectedCompetition = tableView.getSelectionModel().getSelectedItem();
             if (selectedCompetition != null) {
@@ -809,13 +816,13 @@ public class MainApplication extends Application {
     }
 
     private Tab createResultsTab() {
-        Tab tab = new Tab("Competition Results");
+        Tab tab = new Tab("Результаты соревнований");
         tab.setClosable(false);
 
         TableView<String[]> tableView = new TableView<>();
         
         // Add columns
-        String[] columns = {"ID", "Competition", "Athlete", "Position", "Award"};
+        String[] columns = {"ID", "Соревнование", "Спортсмен", "Место", "Награда"};
         for (int i = 0; i < columns.length; i++) {
             final int columnIndex = i;
             TableColumn<String[], String> column = new TableColumn<>(columns[i]);
@@ -830,16 +837,16 @@ public class MainApplication extends Application {
 
         // Add controls for inserting/updating results
         ComboBox<String> competitionComboBox = new ComboBox<>();
-        competitionComboBox.setPromptText("Select Competition");
+        competitionComboBox.setPromptText("Выберите соревнование");
         
         ComboBox<String> athleteComboBox = new ComboBox<>();
-        athleteComboBox.setPromptText("Select Athlete");
+        athleteComboBox.setPromptText("Выберите спортсмена");
         
         TextField positionField = new TextField();
-        positionField.setPromptText("Position");
+        positionField.setPromptText("Место");
         
         TextField awardField = new TextField();
-        awardField.setPromptText("Award");
+        awardField.setPromptText("Награда");
 
         // Load competition combo box data
         try {
@@ -867,7 +874,7 @@ public class MainApplication extends Application {
             }
         });
 
-        Button addButton = new Button("Add Result");
+        Button addButton = new Button("Добавить");
         addButton.setOnAction(e -> {
             try {
                 if (competitionComboBox.getValue() == null || athleteComboBox.getValue() == null || 
@@ -901,7 +908,7 @@ public class MainApplication extends Application {
             }
         });
 
-        Button updateButton = new Button("Update Selected");
+        Button updateButton = new Button("Обновить");
         updateButton.setOnAction(e -> {
             String[] selectedResult = tableView.getSelectionModel().getSelectedItem();
             if (selectedResult != null) {
@@ -926,7 +933,7 @@ public class MainApplication extends Application {
             }
         });
 
-        Button deleteButton = new Button("Delete Selected");
+        Button deleteButton = new Button("Удалить");
         deleteButton.setOnAction(e -> {
             String[] selectedResult = tableView.getSelectionModel().getSelectedItem();
             if (selectedResult != null) {
@@ -1042,7 +1049,7 @@ public class MainApplication extends Application {
 
     private void showError(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
+        alert.setTitle("Ошибка");
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
