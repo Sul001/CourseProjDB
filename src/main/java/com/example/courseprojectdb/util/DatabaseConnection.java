@@ -9,17 +9,11 @@ public class DatabaseConnection {
     private static final String USER = "st2092";
     private static final String PASS = "pwd_2092";
     
-    private static Connection connection = null;
+    private static Connection connection;
     
-    public static Connection getConnection() {
-        if (connection == null) {
-            try {
-                connection = DriverManager.getConnection(URL, USER, PASS);
-                System.out.println("Database connection established successfully!");
-            } catch (SQLException e) {
-                System.err.println("Error connecting to database: " + e.getMessage());
-                e.printStackTrace();
-            }
+    public static Connection getConnection() throws SQLException {
+        if (connection == null || connection.isClosed()) {
+            connection = DriverManager.getConnection(URL, USER, PASS);
         }
         return connection;
     }
@@ -28,10 +22,7 @@ public class DatabaseConnection {
         if (connection != null) {
             try {
                 connection.close();
-                connection = null;
-                System.out.println("Database connection closed successfully!");
             } catch (SQLException e) {
-                System.err.println("Error closing database connection: " + e.getMessage());
                 e.printStackTrace();
             }
         }
