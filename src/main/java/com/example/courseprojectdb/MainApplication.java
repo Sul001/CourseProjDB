@@ -19,9 +19,17 @@ public class MainApplication extends Application {
     private AthletesDAO athletesDAO;
     private CompetitionsDAO competitionsDAO;
     private CompetitionResultsDAO resultsDAO;
+    
+    private String currentUserId;
+    private String currentUserRole;
 
     @Override
     public void start(Stage stage) {
+        initializeDAOs();
+        showLoginWindow(stage);
+    }
+
+    private void initializeDAOs() {
         usersDAO = new UsersDAO();
         clubsDAO = new ClubsDAO();
         sportsDAO = new SportsDAO();
@@ -29,20 +37,70 @@ public class MainApplication extends Application {
         athletesDAO = new AthletesDAO();
         competitionsDAO = new CompetitionsDAO();
         resultsDAO = new CompetitionResultsDAO();
+    }
 
+    private void showLoginWindow(Stage stage) {
+        LoginWindow loginWindow =
+                new LoginWindow(stage);
+        loginWindow.setLoginCallback((userId, userRole) -> {
+            currentUserId = userId;
+            currentUserRole = userRole;
+            showMainWindow(stage);
+        });
+        loginWindow.show();
+    }
+
+    private void showMainWindow(Stage stage) {
         TabPane tabPane = new TabPane();
-        tabPane.getTabs().addAll(
-            createUsersTab(),
-            createClubsTab(),
-            createSportsTab(),
-            createFacilitiesTab(),
-            createAthletesTab(),
-            createCompetitionsTab(),
-            createResultsTab()
-        );
+        
+        // Add tabs based on user role
+        switch (currentUserRole) {
+            case "admin":
+                tabPane.getTabs().addAll(
+                    createUsersTab(),
+                    createClubsTab(),
+                    createSportsTab(),
+                    createFacilitiesTab(),
+                    createAthletesTab(),
+                    createCompetitionsTab(),
+                    createResultsTab()
+                );
+                break;
+                
+            case "athlete":
+                // Athletes can only view clubs, facilities, and competition results
+                tabPane.getTabs().addAll(
+                    createReadOnlyClubsTab(),
+                    createReadOnlyFacilitiesTab(),
+                    createReadOnlyResultsTab()
+                );
+                break;
+                
+            case "trainer":
+                // Trainers can manage athletes and view other information
+                tabPane.getTabs().addAll(
+                    createReadOnlyClubsTab(),
+                    createReadOnlyFacilitiesTab(),
+                    createAthletesTab(),
+                    createReadOnlyCompetitionsTab(),
+                    createReadOnlyResultsTab()
+                );
+                break;
+                
+            case "organizer":
+                // Organizers can manage competitions and results
+                tabPane.getTabs().addAll(
+                    createReadOnlyClubsTab(),
+                    createReadOnlyFacilitiesTab(),
+                    createReadOnlyAthletesTab(),
+                    createCompetitionsTab(),
+                    createResultsTab()
+                );
+                break;
+        }
 
         Scene scene = new Scene(new VBox(tabPane), 1200, 800);
-        stage.setTitle("Управление спортивной базой данных");
+        stage.setTitle("Управление спортивной базой данных - " + currentUserRole);
         stage.setScene(scene);
         stage.show();
     }
@@ -388,27 +446,48 @@ public class MainApplication extends Application {
         // Type change listener to handle conditional fields
         typeComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
-                capacityField.setDisable(!newVal.equals("stadium"));
-                surfaceField.setDisable(!newVal.equals("court"));
+                String type = newVal.split(" - ")[0];
+                capacityField.setDisable(!type.equals("stadium"));
+                surfaceField.setDisable(!type.equals("court"));
             }
         });
 
         Button addButton = new Button("Добавить");
         addButton.setOnAction(e -> {
             try {
+                String type = typeComboBox.getValue().split(" - ")[0];
+                
+                // Проверка обязательных полей
+                if (nameField.getText().isEmpty()) {
+                    showError("Validation Error", "Пожалуйста, введите название объекта");
+                    return;
+                }
+                if (addressArea.getText().isEmpty()) {
+                    showError("Validation Error", "Пожалуйста, введите адрес");
+                    return;
+                }
+                if (type.equals("stadium") && capacityField.getText().isEmpty()) {
+                    showError("Validation Error", "Для стадиона необходимо указать вместимость");
+                    return;
+                }
+                if (type.equals("court") && surfaceField.getText().isEmpty()) {
+                    showError("Validation Error", "Для корта необходимо указать тип покрытия");
+                    return;
+                }
+
                 Integer capacity = null;
-                if (typeComboBox.getValue().equals("stadium") && !capacityField.getText().isEmpty()) {
+                if (type.equals("stadium")) {
                     capacity = Integer.parseInt(capacityField.getText());
                 }
                 
                 String surfaceType = null;
-                if (typeComboBox.getValue().equals("court") && !surfaceField.getText().isEmpty()) {
+                if (type.equals("court")) {
                     surfaceType = surfaceField.getText();
                 }
 
                 facilitiesDAO.insertFacility(
                     nameField.getText(),
-                    typeComboBox.getValue(),
+                    type,
                     addressArea.getText(),
                     capacity,
                     surfaceType
@@ -425,20 +504,40 @@ public class MainApplication extends Application {
             String[] selectedFacility = tableView.getSelectionModel().getSelectedItem();
             if (selectedFacility != null) {
                 try {
+                    String type = typeComboBox.getValue().split(" - ")[0];
+                    
+                    // Проверка обязательных полей
+                    if (nameField.getText().isEmpty()) {
+                        showError("Validation Error", "Пожалуйста, введите название объекта");
+                        return;
+                    }
+                    if (addressArea.getText().isEmpty()) {
+                        showError("Validation Error", "Пожалуйста, введите адрес");
+                        return;
+                    }
+                    if (type.equals("stadium") && capacityField.getText().isEmpty()) {
+                        showError("Validation Error", "Для стадиона необходимо указать вместимость");
+                        return;
+                    }
+                    if (type.equals("court") && surfaceField.getText().isEmpty()) {
+                        showError("Validation Error", "Для корта необходимо указать тип покрытия");
+                        return;
+                    }
+
                     Integer capacity = null;
-                    if (typeComboBox.getValue().equals("stadium") && !capacityField.getText().isEmpty()) {
+                    if (type.equals("stadium")) {
                         capacity = Integer.parseInt(capacityField.getText());
                     }
                     
                     String surfaceType = null;
-                    if (typeComboBox.getValue().equals("court") && !surfaceField.getText().isEmpty()) {
+                    if (type.equals("court")) {
                         surfaceType = surfaceField.getText();
                     }
 
                     facilitiesDAO.updateFacility(
                         Integer.parseInt(selectedFacility[0]),
                         nameField.getText(),
-                        typeComboBox.getValue(),
+                        type,
                         addressArea.getText(),
                         capacity,
                         surfaceType
@@ -546,7 +645,7 @@ public class MainApplication extends Application {
 
                 int userId = Integer.parseInt(userComboBox.getValue().split(" - ")[0]);
                 int clubId = Integer.parseInt(clubComboBox.getValue().split(" - ")[0]);
-                String birthDate = birthDatePicker.getValue().toString();
+                String birthDate = birthDatePicker.getValue().format(java.time.format.DateTimeFormatter.ISO_DATE);
 
                 athletesDAO.insertAthlete(userId, clubId, birthDate);
                 refreshAthletesTable(tableView);
@@ -568,7 +667,7 @@ public class MainApplication extends Application {
                     }
 
                     int clubId = Integer.parseInt(clubComboBox.getValue().split(" - ")[0]);
-                    String birthDate = birthDatePicker.getValue().toString();
+                    String birthDate = birthDatePicker.getValue().format(java.time.format.DateTimeFormatter.ISO_DATE);
 
                     athletesDAO.updateAthlete(
                         Integer.parseInt(selectedAthlete[0]),
@@ -698,6 +797,21 @@ public class MainApplication extends Application {
                     return;
                 }
 
+                // Проверка дат
+                java.time.LocalDate today = java.time.LocalDate.now();
+                java.time.LocalDate startDate = startDatePicker.getValue();
+                java.time.LocalDate endDate = endDatePicker.getValue();
+
+                if (startDate.isBefore(today)) {
+                    showError("Validation Error", "Start date cannot be in the past");
+                    return;
+                }
+
+                if (endDate.isBefore(startDate)) {
+                    showError("Validation Error", "End date cannot be before start date");
+                    return;
+                }
+
                 int sportId = Integer.parseInt(sportComboBox.getValue().split(" - ")[0]);
                 int facilityId = Integer.parseInt(facilityComboBox.getValue().split(" - ")[0]);
                 int organizerId = Integer.parseInt(organizerComboBox.getValue().split(" - ")[0]);
@@ -707,8 +821,8 @@ public class MainApplication extends Application {
                     sportId,
                     facilityId,
                     organizerId,
-                    startDatePicker.getValue().toString(),
-                    endDatePicker.getValue().toString()
+                    startDatePicker.getValue().format(java.time.format.DateTimeFormatter.ISO_DATE),
+                    endDatePicker.getValue().format(java.time.format.DateTimeFormatter.ISO_DATE)
                 );
                 refreshCompetitionsTable(tableView);
                 clearControls(nameField, sportComboBox, facilityComboBox, organizerComboBox);
@@ -731,6 +845,21 @@ public class MainApplication extends Application {
                         return;
                     }
 
+                    // Проверка дат
+                    java.time.LocalDate today = java.time.LocalDate.now();
+                    java.time.LocalDate startDate = startDatePicker.getValue();
+                    java.time.LocalDate endDate = endDatePicker.getValue();
+
+                    if (startDate.isBefore(today)) {
+                        showError("Validation Error", "Start date cannot be in the past");
+                        return;
+                    }
+
+                    if (endDate.isBefore(startDate)) {
+                        showError("Validation Error", "End date cannot be before start date");
+                        return;
+                    }
+
                     int sportId = Integer.parseInt(sportComboBox.getValue().split(" - ")[0]);
                     int facilityId = Integer.parseInt(facilityComboBox.getValue().split(" - ")[0]);
                     int organizerId = Integer.parseInt(organizerComboBox.getValue().split(" - ")[0]);
@@ -741,8 +870,8 @@ public class MainApplication extends Application {
                         sportId,
                         facilityId,
                         organizerId,
-                        startDatePicker.getValue().toString(),
-                        endDatePicker.getValue().toString()
+                        startDatePicker.getValue().format(java.time.format.DateTimeFormatter.ISO_DATE),
+                        endDatePicker.getValue().format(java.time.format.DateTimeFormatter.ISO_DATE)
                     );
                     refreshCompetitionsTable(tableView);
                     clearControls(nameField, sportComboBox, facilityComboBox, organizerComboBox);
@@ -965,6 +1094,148 @@ public class MainApplication extends Application {
         tab.setContent(content);
 
         // Initial table load
+        refreshResultsTable(tableView);
+
+        return tab;
+    }
+
+    private Tab createReadOnlyClubsTab() {
+        Tab tab = new Tab("Клубы");
+        tab.setClosable(false);
+
+        TableView<String[]> tableView = new TableView<>();
+        
+        // Add columns
+        String[] columns = {"ID", "Название", "Год основания"};
+        for (int i = 0; i < columns.length; i++) {
+            final int columnIndex = i;
+            TableColumn<String[], String> column = new TableColumn<>(columns[i]);
+            column.setCellValueFactory(data -> {
+                String[] row = data.getValue();
+                return row != null && row.length > columnIndex ? 
+                    new SimpleStringProperty(row[columnIndex]) : 
+                    new SimpleStringProperty("");
+            });
+            tableView.getColumns().add(column);
+        }
+
+        VBox content = new VBox(10, tableView);
+        content.setStyle("-fx-padding: 10;");
+        tab.setContent(content);
+
+        // Initial table load
+        refreshClubsTable(tableView);
+
+        return tab;
+    }
+
+    private Tab createReadOnlyFacilitiesTab() {
+        Tab tab = new Tab("Спортивные объекты");
+        tab.setClosable(false);
+
+        TableView<String[]> tableView = new TableView<>();
+        
+        String[] columns = {"ID", "Название", "Тип", "Адрес", "Вместимость", "Тип покрытия"};
+        for (int i = 0; i < columns.length; i++) {
+            final int columnIndex = i;
+            TableColumn<String[], String> column = new TableColumn<>(columns[i]);
+            column.setCellValueFactory(data -> {
+                String[] row = data.getValue();
+                return row != null && row.length > columnIndex ? 
+                    new SimpleStringProperty(row[columnIndex]) : 
+                    new SimpleStringProperty("");
+            });
+            tableView.getColumns().add(column);
+        }
+
+        VBox content = new VBox(10, tableView);
+        content.setStyle("-fx-padding: 10;");
+        tab.setContent(content);
+
+        refreshFacilitiesTable(tableView);
+
+        return tab;
+    }
+
+    private Tab createReadOnlyAthletesTab() {
+        Tab tab = new Tab("Спортсмены");
+        tab.setClosable(false);
+
+        TableView<String[]> tableView = new TableView<>();
+        
+        String[] columns = {"ID", "ФИО", "Клуб", "Дата рождения"};
+        for (int i = 0; i < columns.length; i++) {
+            final int columnIndex = i;
+            TableColumn<String[], String> column = new TableColumn<>(columns[i]);
+            column.setCellValueFactory(data -> {
+                String[] row = data.getValue();
+                return row != null && row.length > columnIndex ? 
+                    new SimpleStringProperty(row[columnIndex]) : 
+                    new SimpleStringProperty("");
+            });
+            tableView.getColumns().add(column);
+        }
+
+        VBox content = new VBox(10, tableView);
+        content.setStyle("-fx-padding: 10;");
+        tab.setContent(content);
+
+        refreshAthletesTable(tableView);
+
+        return tab;
+    }
+
+    private Tab createReadOnlyCompetitionsTab() {
+        Tab tab = new Tab("Соревнования");
+        tab.setClosable(false);
+
+        TableView<String[]> tableView = new TableView<>();
+        
+        String[] columns = {"ID", "Название", "Вид спорта", "Объект", "Организатор", "Дата начала", "Дата окончания"};
+        for (int i = 0; i < columns.length; i++) {
+            final int columnIndex = i;
+            TableColumn<String[], String> column = new TableColumn<>(columns[i]);
+            column.setCellValueFactory(data -> {
+                String[] row = data.getValue();
+                return row != null && row.length > columnIndex ? 
+                    new SimpleStringProperty(row[columnIndex]) : 
+                    new SimpleStringProperty("");
+            });
+            tableView.getColumns().add(column);
+        }
+
+        VBox content = new VBox(10, tableView);
+        content.setStyle("-fx-padding: 10;");
+        tab.setContent(content);
+
+        refreshCompetitionsTable(tableView);
+
+        return tab;
+    }
+
+    private Tab createReadOnlyResultsTab() {
+        Tab tab = new Tab("Результаты соревнований");
+        tab.setClosable(false);
+
+        TableView<String[]> tableView = new TableView<>();
+        
+        String[] columns = {"ID", "Соревнование", "Спортсмен", "Место", "Награда"};
+        for (int i = 0; i < columns.length; i++) {
+            final int columnIndex = i;
+            TableColumn<String[], String> column = new TableColumn<>(columns[i]);
+            column.setCellValueFactory(data -> {
+                String[] row = data.getValue();
+                return row != null && row.length > columnIndex ? 
+                    new SimpleStringProperty(row[columnIndex]) : 
+                    new SimpleStringProperty("");
+            });
+            tableView.getColumns().add(column);
+        }
+
+        VBox content = new VBox(10, tableView);
+        content.setStyle("-fx-padding: 10;");
+        tab.setContent(content);
+
         refreshResultsTable(tableView);
 
         return tab;

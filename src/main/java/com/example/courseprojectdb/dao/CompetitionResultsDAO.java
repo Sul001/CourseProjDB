@@ -40,10 +40,14 @@ public class CompetitionResultsDAO extends BaseDAO {
 
     public List<String[]> getAvailableAthletes(int competitionId) throws SQLException {
         String query = 
-            "SELECT a.id, u.full_name " +
+            "SELECT DISTINCT a.id, u.full_name " +
             "FROM public.athletes a " +
             "JOIN public.users u ON a.user_id = u.id " +
-            "WHERE a.id NOT IN (SELECT athlete_id FROM public.competition_results WHERE competition_id = ?) " +
+            "WHERE a.id NOT IN (" +
+            "   SELECT athlete_id " +
+            "   FROM public.competition_results " +
+            "   WHERE competition_id = ?" +
+            ") " +
             "ORDER BY u.full_name";
         return executeQuery(query, competitionId);
     }

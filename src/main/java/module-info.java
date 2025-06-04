@@ -4,7 +4,8 @@ module com.example.courseprojectdb {
     requires javafx.base;
     requires javafx.graphics;
     requires java.sql;
-    
+    requires jbcrypt;
+
     exports com.example.courseprojectdb;
     exports com.example.courseprojectdb.dao;
     exports com.example.courseprojectdb.util;

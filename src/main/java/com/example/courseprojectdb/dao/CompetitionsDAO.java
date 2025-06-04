@@ -20,7 +20,7 @@ public class CompetitionsDAO extends BaseDAO {
     public int insertCompetition(String name, int sportId, int facilityId, int organizerId, 
                                String startDate, String endDate) throws SQLException {
         return executeUpdate(
-            "CALL public.insert_competition(?, ?, ?, ?, ?, ?)",
+            "CALL public.insert_competition(?, ?, ?, ?, ?::date, ?::date)",
             name, sportId, facilityId, organizerId, startDate, endDate
         );
     }
@@ -28,7 +28,7 @@ public class CompetitionsDAO extends BaseDAO {
     public int updateCompetition(int id, String name, int sportId, int facilityId, 
                                int organizerId, String startDate, String endDate) throws SQLException {
         return executeUpdate(
-            "CALL public.update_competition(?, ?, ?, ?, ?, ?, ?)",
+            "CALL public.update_competition(?, ?, ?, ?, ?, ?::date, ?::date)",
             id, name, sportId, facilityId, organizerId, startDate, endDate
         );
     }

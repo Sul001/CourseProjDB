@@ -4,10 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="21bd3bbb-18a0-4941-b2c3-962af03d3541" name="Changes" comment="add admin panel">
+    <list default="true" id="21bd3bbb-18a0-4941-b2c3-962af03d3541" name="Changes" comment="fix update procedur">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/insert_procedures.sql" beforeDir="false" afterPath="$PROJECT_DIR$/insert_procedures.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/courseprojectdb/MainApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/courseprojectdb/MainApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/courseprojectdb/dao/AthletesDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/courseprojectdb/dao/AthletesDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/courseprojectdb/dao/CompetitionResultsDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/courseprojectdb/dao/CompetitionResultsDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/courseprojectdb/dao/CompetitionsDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/courseprojectdb/dao/CompetitionsDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/courseprojectdb/dao/UsersDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/courseprojectdb/dao/UsersDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,9 +57,10 @@
     &quot;Application.HelloApplication.executor&quot;: &quot;Run&quot;,
     &quot;Application.MainApplication.executor&quot;: &quot;Run&quot;,
     &quot;Maven.CourseProjectDB [clean,-b].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.CourseProjectDB [clean,javafx:run].executor&quot;: &quot;Run&quot;,
     &quot;Maven.CourseProjectDB [javafx:run].executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;mastertest&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;
   }
@@ -61,6 +68,7 @@
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="mvn clean -b" />
+      <command value="mvn clean javafx:run" />
       <command value="mvn javafx:run" />
     </option>
   </component>
@@ -103,6 +111,17 @@
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add admin panel" />

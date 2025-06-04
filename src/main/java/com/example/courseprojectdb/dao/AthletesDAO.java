@@ -1,6 +1,7 @@
 package com.example.courseprojectdb.dao;
 
 import java.sql.SQLException;
+import java.sql.Date;
 import java.util.List;
 
 public class AthletesDAO extends BaseDAO {
@@ -12,10 +13,10 @@ public class AthletesDAO extends BaseDAO {
         "ORDER BY a.id";
     
     private static final String INSERT = 
-        "INSERT INTO public.athletes (user_id, club_id, birth_date) VALUES (?, ?, ?)";
+        "INSERT INTO public.athletes (user_id, club_id, birth_date) VALUES (?, ?, ?::date)";
     
     private static final String UPDATE = 
-        "UPDATE public.athletes SET club_id = ?, birth_date = ? WHERE id = ?";
+        "UPDATE public.athletes SET club_id = ?, birth_date = ?::date WHERE id = ?";
     
     private static final String DELETE = 
         "DELETE FROM public.athletes WHERE id = ?";
